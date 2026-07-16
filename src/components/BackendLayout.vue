@@ -1,7 +1,9 @@
 <template>
   <div class="backend-layout">
     <el-container>
-      <SideBar />
+      <el-aside width="264px">
+        <SideBar />
+      </el-aside>
       <el-container>
         <el-header>
           <NavBar />
