@@ -11,33 +11,40 @@
 <script setup>
 import PageHeader from "@/components/PageHeader.vue";
 import TableSearch from "@/components/TableSearch.vue";
+import { onMounted } from "vue";
 
 const formItem = [
   {
     comp: "input",
-    label: "文章标题",
     prop: "title",
+    label: "文章标题",
     placeholder: "请输入文章标题",
   },
   {
     comp: "select",
-    label: "文章类型",
-    prop: "category",
-    placeholder: "请选择文章类型",
+    prop: "status",
+    label: "状态",
+    placeholder: "请输入文章内容",
     options: [
       {
-        label: "技术文章",
-        value: "technical",
+        label: "草稿",
+        value: "0",
       },
       {
-        label: "业务文章",
-        value: "business",
+        label: "已发布",
+        value: "1",
+      },
+      {
+        label: "已下线",
+        value: "2",
       },
     ],
   },
 ];
 
 const handleSearch = (data) => {
-  console.log(data);
+  console.log("数据", data);
 };
+
+onMounted(() => {});
 </script>
