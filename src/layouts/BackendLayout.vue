@@ -14,8 +14,8 @@
   </div>
 </template>
 <script setup>
-import SideBar from "./SideBar.vue";
-import NavBar from "./NavBar.vue";
+import SideBar from "../components/SideBar.vue";
+import NavBar from "../components/NavBar.vue";
 </script>
 <style lang="scss" scoped>
 .backend-layout {

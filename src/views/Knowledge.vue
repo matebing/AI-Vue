@@ -22,6 +22,12 @@ const formItem = [
   },
   {
     comp: "select",
+    prop: "categoryId",
+    label: "分类",
+    placeholder: "请选择分类",
+  },
+  {
+    comp: "select",
     prop: "status",
     label: "状态",
     placeholder: "请输入文章内容",

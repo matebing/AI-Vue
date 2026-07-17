@@ -1,8 +1,34 @@
 import { createRouter, createWebHashHistory } from "vue-router";
-import BackendLayout from "@/components/BackendLayout.vue";
+import AuthLayout from "@/layouts/AuthLayout.vue";
+import BackendLayout from "@/layouts/BackendLayout.vue";
 
 // 后台系统路由
 const backendRoutes = [
+  {
+    name: "AuthLayout",
+    path: "/auth",
+    component: AuthLayout,
+    children: [
+      {
+        name: "Login",
+        path: "login",
+        component: () => import("@/views/Login.vue"),
+        meta: {
+          title: "登录",
+          icon: "Login",
+        },
+      },
+      {
+        name: "Register",
+        path: "register",
+        component: () => import("@/views/Register.vue"),
+        meta: {
+          title: "注册",
+          icon: "Register",
+        },
+      },
+    ],
+  },
   {
     name: "BackendLayout",
     path: "/back",
