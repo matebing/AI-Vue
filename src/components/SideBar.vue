@@ -1,25 +1,40 @@
 <template>
-  <el-menu default-active="2" class="side-menu">
-    <div class="brand">
-      <el-image class="brand-logo" :src="iconUrl"></el-image>
-      <div class="brand-info">
-        <h1 class="brand-title">心理健康AI助手</h1>
-        <p class="brand-subtitle">管理后台</p>
-      </div>
-    </div>
-    <el-menu-item
-      v-for="(menu, index) in routes"
-      :key="index"
-      :index="menu.path"
-      @click="selectMenu"
+  <el-aside :width="isCollapse ? '64px' : '224px'">
+    <el-menu
+      default-active="2"
+      class="side-menu"
+      :collapse="isCollapse"
+      :collapse-transition="false"
     >
-      <el-icon><component :is="menu.meta.icon" /></el-icon>
-      <span>{{ menu.meta.title }}</span>
-    </el-menu-item>
-  </el-menu>
+      <div class="brand">
+        <el-image class="brand-logo" :src="iconUrl"></el-image>
+        <div v-if="!isCollapse" class="brand-info">
+          <h1 class="brand-title">心理健康AI助手</h1>
+          <p class="brand-subtitle">管理后台</p>
+        </div>
+      </div>
+      <el-menu-item
+        v-for="(menu, index) in routes"
+        :key="index"
+        :index="menu.path"
+        @click="selectMenu"
+      >
+        <el-icon><component :is="menu.meta.icon" /></el-icon>
+        <span>{{ menu.meta.title }}</span>
+      </el-menu-item>
+    </el-menu>
+  </el-aside>
 </template>
 <script setup>
+import { computed } from "vue";
 import { useRouter, useRoute } from "vue-router";
+import { useAdminStore } from "@/store/admin";
+import { storeToRefs } from "pinia";
+
+const { isCollapse } = storeToRefs(useAdminStore());
+
+const isCollapsed = computed(() => useAdminStore().isCollapse);
+
 const router = useRouter();
 const { children: routes, path } = router.options.routes[0];
 
@@ -42,14 +57,14 @@ console.log("路由", useRoute(), "路由器", useRouter());
     justify-content: center;
     align-items: center;
     padding: 10px;
-    background-color: #f5f7fa;
+    background-color: white;
     border-bottom: 1px solid #e5e7eb;
     .brand-logo {
       width: 50px;
       height: 50px;
-      margin-right: 10px;
     }
     .brand-info {
+      margin-left: 10px;
       .brand-title {
         font-size: 20px;
         font-weight: bold;

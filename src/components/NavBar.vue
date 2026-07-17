@@ -1,7 +1,7 @@
 <template>
   <div class="nav-bar">
     <div class="flex-box">
-      <el-button>
+      <el-button @click="handleCollapse">
         <el-icon><Expand /></el-icon>
       </el-button>
       <span class="page-title">导航栏</span>
@@ -25,6 +25,13 @@
   </div>
 </template>
 <script setup>
+import { useAdminStore } from "@/store/admin";
+const adminStore = useAdminStore();
+
+const handleCollapse = () => {
+  adminStore.changeCollapse();
+};
+
 const handleCommand = (command) => {
   console.log(command);
   if (command === "logout") {
@@ -37,15 +44,15 @@ const handleCommand = (command) => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 64px;
+  height: 100%;
   padding: 0 15px;
   background-color: white;
-  box-shadow: 0 1px 4px rgba(0, 21, 41, 0.88);
+  box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
   border-bottom: 1px solid #e5e7eb;
 
   .flex-box {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
 
     .page-title {
