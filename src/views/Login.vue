@@ -57,8 +57,10 @@
 import { ref, reactive } from "vue";
 import { login } from "@/api/admin";
 import { ElMessage } from "element-plus";
+import { useRouter } from "vue-router";
 
 const formRef = ref(null);
+const router = useRouter();
 const formData = reactive({
   username: "",
   password: "",
@@ -83,7 +85,13 @@ const handleLogin = async (formEl) => {
         localStorage.setItem("token", res.token);
         localStorage.setItem("userInfo", JSON.stringify(res.userInfo));
         ElMessage.success("登录成功");
-        // router.push({ name: "home" });
+        //根据用户角色决定跳转的路径
+        if (res.roleType === "2") {
+          router.push("/back/dashboard");
+        } else {
+          // 普通用户跳转首页
+          router.push({ name: "home" });
+        }
       });
     }
   });

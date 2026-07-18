@@ -1,14 +1,14 @@
 <template>
-  <el-aside :width="isCollapse ? '64px' : '224px'">
+  <el-aside :width="isCollapsed ? '64px' : '224px'">
     <el-menu
       default-active="2"
       class="side-menu"
-      :collapse="isCollapse"
+      :collapse="isCollapsed"
       :collapse-transition="false"
     >
       <div class="brand">
         <el-image class="brand-logo" :src="iconUrl"></el-image>
-        <div v-if="!isCollapse" class="brand-info">
+        <div v-if="!isCollapsed" class="brand-info">
           <h1 class="brand-title">心理健康AI助手</h1>
           <p class="brand-subtitle">管理后台</p>
         </div>
@@ -36,7 +36,7 @@ const { isCollapse } = storeToRefs(useAdminStore());
 const isCollapsed = computed(() => useAdminStore().isCollapse);
 
 const router = useRouter();
-const { children: routes, path } = router.options.routes[0];
+const { children: routes, path } = router.options.routes[1];
 
 //获取图片路径，需要确保打包之后的路径正确，否则会报错
 const iconUrl = new URL("@/assets/images/机器人.png", import.meta.url).href;
