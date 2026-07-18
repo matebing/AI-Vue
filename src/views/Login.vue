@@ -55,6 +55,8 @@
 </template>
 <script setup>
 import { ref, reactive } from "vue";
+import { login } from "@/api/admin";
+import { ElMessage } from "element-plus";
 
 const formRef = ref(null);
 const formData = reactive({
@@ -72,7 +74,17 @@ const handleLogin = async (formEl) => {
   await formEl.validate((valid, fields) => {
     console.log("验证结果", valid, fields);
     if (valid) {
-      console.log(fields);
+      login(formData).then((res) => {
+        // 判断token是否存在
+        if (!res.token) {
+          ElMessage.error("登录失败");
+        }
+        // 登录成功
+        localStorage.setItem("token", res.token);
+        localStorage.setItem("userInfo", JSON.stringify(res.userInfo));
+        ElMessage.success("登录成功");
+        // router.push({ name: "home" });
+      });
     }
   });
 };
