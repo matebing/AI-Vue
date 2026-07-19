@@ -1,7 +1,26 @@
 import express, { response } from "express";
+import multer from "multer";
+import fs from "fs";
+import path from "path";
 const app = express();
 
-//express.json() 中间件,解析 JSON 格式的请求体
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const dir = path.join("backend", "images");
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+    cb(null, dir);
+  },
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    const filename = Date.now() + ext;
+    cb(null, filename);
+  },
+});
+
+const upload = multer({ storage });
+
 app.use(express.json());
 
 app.use((request, response, next) => {
@@ -293,6 +312,70 @@ app.get("/knowledge/article/page", (request, response) => {
   };
   response.send(data);
 });
+
+app.post("/file/upload", upload.single("file"), (request, response) => {
+  const { file } = request;
+  const { businessType, businessId, businessField } = request.body;
+
+  if (!file) {
+    response.send({
+      code: "-1",
+      msg: "请选择要上传的文件",
+      success: false,
+    });
+    return;
+  }
+
+  const filePath = `/files/images/${file.filename}`;
+  const ext = path.extname(file.originalname).toLowerCase();
+  const fileTypeMap = {
+    ".jpg": { type: "IMG", desc: "图片" },
+    ".jpeg": { type: "IMG", desc: "图片" },
+    ".png": { type: "IMG", desc: "图片" },
+    ".gif": { type: "IMG", desc: "图片" },
+    ".svg": { type: "IMG", desc: "图片" },
+    ".webp": { type: "IMG", desc: "图片" },
+  };
+  const fileTypeInfo = fileTypeMap[ext] || { type: "OTHER", desc: "其他" };
+
+  const data = {
+    code: "200",
+    msg: "操作成功",
+    data: {
+      id: Math.floor(Math.random() * 100000),
+      originalName: file.originalname,
+      filePath,
+      fileSize: file.size,
+      fileType: fileTypeInfo.type,
+      fileTypeDesc: fileTypeInfo.desc,
+      businessType: businessType || "ARTICLE",
+      businessTypeDesc: "文章封面",
+      businessId: businessId || crypto.randomUUID(),
+      businessField: businessField || "cover",
+      uploadUserId: 1,
+      isTemp: false,
+      status: 1,
+      createTime: new Date()
+        .toLocaleString("zh-CN", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: false,
+        })
+        .replace(/\//g, "-"),
+      fileExtension: ext.slice(1),
+      isExpired: false,
+    },
+    message: "操作成功",
+    success: true,
+  };
+  response.send(data);
+});
+
+app.use("/files", express.static(path.join("backend")));
 
 app.listen(5000, () => {
   console.log("服务器启动成功，请求地址：http://localhost:5000");
