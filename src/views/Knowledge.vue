@@ -2,12 +2,14 @@
   <div class="knowledge-container">
     <PageHeader title="知识文档">
       <template #buttons>
-        <el-button type="primary">新增</el-button>
+        <el-button type="primary" @click="addDialogVisible = true"
+          >新增</el-button
+        >
       </template>
     </PageHeader>
     <TableSearch :formItem="formItem" @search="handleSearch" />
     <el-table :data="articleList" class="knowledge-table">
-      <el-table-column label="文章标题" width="200">
+      <el-table-column label="文章标题" fixed="left">
         <template #default="{ row }">
           <div class="table-item">
             <el-icon><Timer /></el-icon>
@@ -15,14 +17,69 @@
           </div>
         </template>
       </el-table-column>
+      <el-table-column label="分类" width="200">
+        <template #default="{ row }">
+          <div class="table-item">
+            <el-icon><Timer /></el-icon>
+            <span>{{ categoryMap[row.categoryId] }}</span>
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column
+        label="作者"
+        prop="authorName"
+        width="150"
+      ></el-table-column>
+      <el-table-column
+        label="阅读量"
+        prop="readCount"
+        width="150"
+      ></el-table-column>
+      <el-table-column
+        label="发布时间"
+        prop="publishedAt"
+        width="150"
+      ></el-table-column>
+      <el-table-column label="操作" width="240" fixed="right">
+        <template #default="{ row }">
+          <el-button text type="primary">编辑</el-button>
+          <el-button v-if="[0, 2].includes(row.status)" text type="success"
+            >发布</el-button
+          >
+          <el-button v-if="[1].includes(row.status)" text type="warning"
+            >下线</el-button
+          >
+          <el-button text type="danger">删除</el-button>
+        </template>
+      </el-table-column>
     </el-table>
+    <el-pagination
+      class="knowledge-pagination"
+      layout="prev, pager, next, total, sizes"
+      :total="pagination.total"
+      :page-size="pagination.size"
+      :current-page="pagination.currentPage"
+      @current-change="currentChange"
+      @size-change="sizeChange"
+    ></el-pagination>
+    <!-- v-model:modelValue可以隐式的向子组件传递一个v-on:update:modelValue事件 -->
+    <!-- 相当于：v-bind:modelValue="addDialogVisible" v-on:update:modelValue="addDialogVisible = $event" -->
+    <!-- 相当于：:modelValue="addDialogVisible" @update:modelValue="addDialogVisible = $event"  -->
+    <ArticleDialog
+      title="文章标题"
+      v-model:modelValue="addDialogVisible"
+      :categoryList="categoryList"
+    />
   </div>
 </template>
 <script setup>
 import PageHeader from "@/components/PageHeader.vue";
 import TableSearch from "@/components/TableSearch.vue";
+import ArticleDialog from "@/components/ArticleDialog.vue";
 import { onMounted, reactive, ref } from "vue";
 import { getCategoryList, getArticleList } from "@/api/admin";
+
+const addDialogVisible = ref(false);
 
 const formItem = [
   {
@@ -98,6 +155,17 @@ const queryCategoryList = async () => {
   formItem[1].options = categoryList.value;
 };
 
+const currentChange = (val) => {
+  pagination.currentPage = val;
+  handleSearch();
+};
+
+const sizeChange = (val) => {
+  pagination.currentPage = 1;
+  pagination.size = val;
+  handleSearch();
+};
+
 onMounted(() => {
   queryCategoryList();
   handleSearch();
@@ -113,6 +181,9 @@ onMounted(() => {
       justify-content: center;
       align-items: center;
     }
+  }
+  .knowledge-pagination {
+    margin-top: 25px;
   }
 }
 </style>

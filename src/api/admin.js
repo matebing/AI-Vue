@@ -14,3 +14,18 @@ export function getCategoryList() {
 export function getArticleList(params) {
   return service.get("/knowledge/article/page", { params });
 }
+
+//上传封面
+export function uploadCover(file, businessId) {
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("businessType", "ARTICLE");
+  formData.append("businessId", businessId);
+  formData.append("businessField", "cover");
+
+  return service.post("/file/upload", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+}
