@@ -29,3 +29,8 @@ export function uploadCover(file, businessId) {
     },
   });
 }
+
+// 编辑、新增文章
+export function createArticle(data) {
+  return service.post("/knowledge/article", data);
+}

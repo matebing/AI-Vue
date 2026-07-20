@@ -23,6 +23,8 @@ const upload = multer({ storage });
 
 app.use(express.json());
 
+app.use("/files", express.static(path.join("backend")));
+
 app.use((request, response, next) => {
   console.log("有人请求服务器了", request.get("Host"), request.url);
   next();
@@ -375,7 +377,36 @@ app.post("/file/upload", upload.single("file"), (request, response) => {
   response.send(data);
 });
 
-app.use("/files", express.static(path.join("backend")));
+app.post("/knowledge/article", (request, response) => {
+  const { title, content, coverImage, categoryId, summary, tags, id } =
+    request.body;
+  const tagArray = tags ? tags.split(",").map((tag) => tag.trim()) : [];
+  const data = {
+    code: "200",
+    msg: "创建文章成功",
+    data: {
+      id: id || Math.random().toString(36).substring(2, 26),
+      categoryId,
+      title,
+      summary,
+      content,
+      coverImage: coverImage || "",
+      tags,
+      tagArray,
+      authorId: 1,
+      authorName: "kk",
+      readCount: 0,
+      status: 0,
+      statusText: "草稿",
+      isFavorited: false,
+      createdAt: "2026-07-20 10:25:07",
+      updatedAt: "2026-07-20 10:25:07",
+    },
+    message: "创建文章成功",
+    success: true,
+  };
+  response.send(data);
+});
 
 app.listen(5000, () => {
   console.log("服务器启动成功，请求地址：http://localhost:5000");

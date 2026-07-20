@@ -79,14 +79,37 @@
           </div>
         </div>
       </el-form-item>
+      <el-form-item label="文章内容" prop="content">
+        <RichTextEditor
+          v-model="formData.content"
+          placeholder="请输入文章内容，支持富文本格式\n\n可以使用加粗、斜体、列表、标题等格式来丰富文章内容。"
+          :maxCharCount="5000"
+          min-height="400px"
+          @change="handleContentChange"
+          @created="handleEditorCreated"
+        />
+      </el-form-item>
     </el-form>
+    <div v-if="btnPreview">
+      <!-- v-html指令接收一个HTML字符串，将其渲染为HTML元素 -->
+      <h3>内容预览</h3>
+      <div v-html="formData.content"></div>
+    </div>
+    <template #footer>
+      <el-button type="primary" @click="btnPreview = !btnPreview">{{
+        btnPreview ? "隐藏预览" : "预览效果"
+      }}</el-button>
+      <el-button @click="handleClose">取消</el-button>
+      <el-button @click="handleSubmit" :loading="loading">创建文章</el-button>
+    </template>
   </el-dialog>
 </template>
 <script setup>
 import { ElMessage } from "element-plus";
-import { ref, computed, reactive } from "vue";
-import { uploadCover } from "@/api/admin";
+import { ref, computed, reactive, nextTick } from "vue";
+import { uploadCover, createArticle } from "@/api/admin";
 import { FILE_BASE_URL } from "@/config/index";
+import RichTextEditor from "@/components/RichTextEditor.vue";
 
 const props = defineProps({
   title: {
@@ -103,9 +126,17 @@ const props = defineProps({
   },
 });
 
+const emit = defineEmits(["update:modelValue", "success"]);
+
 const formRef = ref();
 
+const editorInstance = ref(null);
+
+const btnPreview = ref(false);
+
 const imgUrl = ref("");
+
+const loading = ref(false);
 
 const formData = reactive({
   title: "",
@@ -123,6 +154,10 @@ const formRules = reactive({
     { max: 200, message: "文章标题最多200个字符", trigger: "blur" },
   ],
   categoryId: [{ required: true, message: "请选择分类", trigger: "change" }],
+  content: [
+    { required: true, message: "请输入文章内容", trigger: "blur" },
+    { max: 5000, message: "文章内容最多5000个字符", trigger: "blur" },
+  ],
 });
 
 const commonTags = [
@@ -142,8 +177,6 @@ const commonTags = [
   "生活技巧",
 ];
 
-const emit = defineEmits(["update:modelValue"]);
-
 const dialogVisible = computed({
   get: () => {
     return props.modelValue;
@@ -152,8 +185,6 @@ const dialogVisible = computed({
     emit("update:modelValue", val);
   },
 });
-
-const handleClose = () => {};
 
 /**
  * 对上传的文件进行校验
@@ -187,6 +218,52 @@ const handleUpload = async ({ file, name, type, size }) => {
 const removeCover = () => {
   imgUrl.value = "";
   formData.coverImage = "";
+};
+
+const handleContentChange = (data) => {
+  console.log(data);
+  formData.content = data.html;
+};
+
+const handleEditorCreated = (editor) => {
+  editorInstance.value = editor;
+  // 编辑时回填富文本
+  if (formData.content && editor) {
+    // 富文本创建过程是异步的，需要等富文本实例创建完成后再回填内容，否则会导致富文本内容被覆盖掉
+    // editor没有创建出来，调用setHtml会报错，nextTick代表下一次渲染
+    nextTick(() => {
+      editor.setHtml(formData.content);
+    });
+  }
+};
+
+const handleSubmit = () => {
+  formRef.value.validate((valid) => {
+    console.log("formdata", formData);
+    if (valid) {
+      loading.value = true;
+      const params = {
+        ...formData,
+        tags: formData.tagArr?.join(",") || "",
+      };
+      delete params.tagArr;
+      createArticle(params)
+        .then((res) => {
+          ElMessage.success("创建文章成功");
+          emit("success");
+          handleClose();
+        })
+        .finally(() => {
+          loading.value = false;
+        });
+    }
+  });
+};
+
+const handleClose = () => {
+  formRef.value.resetFields();
+  imgUrl.value = "";
+  dialogVisible.value = false;
 };
 </script>
 <style lang="scss" scoped>

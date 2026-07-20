@@ -37,7 +37,7 @@
       ></el-table-column>
       <el-table-column
         label="发布时间"
-        prop="publishedAt"
+        prop="updatedAt"
         width="150"
       ></el-table-column>
       <el-table-column label="操作" width="240" fixed="right">
@@ -69,6 +69,7 @@
       title="文章标题"
       v-model:modelValue="addDialogVisible"
       :categoryList="categoryList"
+      @success="handleSuccess"
     />
   </div>
 </template>
@@ -163,6 +164,11 @@ const currentChange = (val) => {
 const sizeChange = (val) => {
   pagination.currentPage = 1;
   pagination.size = val;
+  handleSearch();
+};
+
+const handleSuccess = () => {
+  pagination.currentPage = 1;
   handleSearch();
 };
 
