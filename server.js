@@ -377,6 +377,7 @@ app.post("/file/upload", upload.single("file"), (request, response) => {
   response.send(data);
 });
 
+// 创建文章
 app.post("/knowledge/article", (request, response) => {
   const { title, content, coverImage, categoryId, summary, tags, id } =
     request.body;
@@ -406,6 +407,150 @@ app.post("/knowledge/article", (request, response) => {
     success: true,
   };
   response.send(data);
+});
+
+// 文章详情
+app.get("/knowledge/article/:id", (req, res) => {
+  const data = {
+    code: "200",
+    msg: "操作成功",
+    data: {
+      id: "1e243202a68c5286fb500eb4fe7fe234",
+      categoryId: 4,
+      categoryName: "人际关系",
+      title: "当·潮汐漫溢",
+      summary: "王俊凯【当·潮汐漫溢】巡回演唱会",
+      content:
+        "<p>王俊凯【当·潮汐漫溢】巡回演唱会——重庆站首场于7月18-19日在重庆·华熙生物·润百颜ECM中心演出</p><p>没抢到票</p><p>痛苦！！！！</p><p><br></p>",
+      coverImage: "/files/bussiness/article/1784272739769.jpg",
+      tags: "情绪管理,放松,正念",
+      tagArray: ["情绪管理", "放松", "正念"],
+      authorId: 1,
+      authorName: "kk",
+      readCount: 0,
+      status: 1,
+      statusText: "已发布",
+      isFavorited: false,
+      publishedAt: "2026-07-19 23:49:32",
+      createdAt: "2026-07-17 15:19:06",
+      updatedAt: "2026-07-19 23:49:32",
+    },
+    message: "操作成功",
+    success: true,
+  };
+  res.send(data);
+});
+
+// 更新文章
+app.put("/knowledge/article/:id", (req, res) => {
+  const data = {
+    code: "200",
+    msg: "更新文章成功了",
+    data: {
+      id: "822d59f1-01f1-4531-8d40-9271de4af0f3",
+      categoryId: 4,
+      categoryName: "人际关系",
+      title: "金泰亨",
+      summary: "11111fads",
+      content: "<p>金泰亨是我偶像123</p>",
+      coverImage: "/files/bussiness/article/1783944102132.webp",
+      tags: "情绪管理,正念",
+      tagArray: ["情绪管理", "正念"],
+      authorId: 1,
+      authorName: "kk",
+      readCount: 0,
+      status: 1,
+      statusText: "已发布",
+      isFavorited: false,
+      publishedAt: "2026-07-20 12:56:49",
+      createdAt: "2026-07-13 20:01:59",
+      updatedAt: "2026-07-20 14:22:14",
+    },
+    message: "更新文章成功",
+    success: true,
+  };
+  res.send(data);
+});
+
+// 发布、下线文章
+app.put("/knowledge/article/:id/status", (req, res) => {
+  const { id } = req.params;
+  const { status } = req.body;
+  console.log("参数", status, id);
+  const publishData = {
+    code: "200",
+    msg: "状态更新成功",
+    data: {
+      id: "01581ea71741edace8550da7789b6834",
+      categoryId: 4,
+      categoryName: "人际关系",
+      title: "1355",
+      summary: "135",
+      content: "<p>56tyghbmnj</p>",
+      coverImage: "/files/bussiness/article/1784448886962.jpg",
+      tags: "放松,抑郁",
+      tagArray: ["放松", "抑郁"],
+      authorId: 1,
+      authorName: "kk",
+      readCount: 0,
+      status: 1,
+      statusText: "已发布",
+      isFavorited: false,
+      publishedAt: "2026-07-20 14:46:39",
+      createdAt: "2026-07-19 16:15:12",
+      updatedAt: "2026-07-20 14:46:39",
+    },
+    message: "状态更新成功",
+    success: true,
+  };
+  const offineData = {
+    code: "200",
+    msg: "状态更新成功",
+    data: {
+      id: "1784348166432",
+      categoryId: 3,
+      categoryName: "压力缓解",
+      title: "ysj1",
+      summary: "2324",
+      content: "<p>你好</p><p>好</p>",
+      coverImage: "/files/bussiness/article/1784348155133.jpg",
+      tags: "焦虑,压力,睡眠",
+      tagArray: ["焦虑", "压力", "睡眠"],
+      authorId: 1,
+      authorName: "kk",
+      readCount: 0,
+      status: 2,
+      statusText: "已下线",
+      isFavorited: false,
+      publishedAt: "2026-07-19 15:41:39",
+      createdAt: "2026-07-18 12:16:07",
+      updatedAt: "2026-07-20 14:51:00",
+    },
+    message: "状态更新成功",
+    success: true,
+  };
+  if (status === 1) {
+    res.send(publishData);
+  } else if (status === 2) {
+    res.send(offineData);
+  } else {
+    res.send({
+      code: "400",
+      msg: "无效的状态值",
+      success: false,
+    });
+  }
+});
+
+// 删除文章
+app.delete("/knowledge/article/:id", (req, res) => {
+  const data = {
+    code: "200",
+    msg: "操作成功",
+    message: "操作成功",
+    success: true,
+  };
+  res.send(data);
 });
 
 app.listen(5000, () => {

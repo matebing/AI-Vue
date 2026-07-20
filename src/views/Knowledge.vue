@@ -2,9 +2,7 @@
   <div class="knowledge-container">
     <PageHeader title="知识文档">
       <template #buttons>
-        <el-button type="primary" @click="addDialogVisible = true"
-          >新增</el-button
-        >
+        <el-button type="primary" @click="handleEdit({})">新增</el-button>
       </template>
     </PageHeader>
     <TableSearch :formItem="formItem" @search="handleSearch" />
@@ -42,14 +40,26 @@
       ></el-table-column>
       <el-table-column label="操作" width="240" fixed="right">
         <template #default="{ row }">
-          <el-button text type="primary">编辑</el-button>
-          <el-button v-if="[0, 2].includes(row.status)" text type="success"
+          <el-button text type="primary" @click="handleEdit(row)"
+            >编辑</el-button
+          >
+          <el-button
+            v-if="[0, 2].includes(row.status)"
+            text
+            type="success"
+            @click="handlePublish(row)"
             >发布</el-button
           >
-          <el-button v-if="[1].includes(row.status)" text type="warning"
+          <el-button
+            v-if="[1].includes(row.status)"
+            text
+            type="warning"
+            @click="handleOffline(row)"
             >下线</el-button
           >
-          <el-button text type="danger">删除</el-button>
+          <el-button text type="danger" @click="handleDelete(row)"
+            >删除</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
@@ -69,6 +79,7 @@
       title="文章标题"
       v-model:modelValue="addDialogVisible"
       :categoryList="categoryList"
+      :articleDetail="articleDetail"
       @success="handleSuccess"
     />
   </div>
@@ -78,9 +89,19 @@ import PageHeader from "@/components/PageHeader.vue";
 import TableSearch from "@/components/TableSearch.vue";
 import ArticleDialog from "@/components/ArticleDialog.vue";
 import { onMounted, reactive, ref } from "vue";
-import { getCategoryList, getArticleList } from "@/api/admin";
+import { ElMessageBox } from "element-plus";
+import {
+  getCategoryList,
+  getArticleList,
+  getArticleDetail,
+  publishArticle,
+  offlineArticle,
+  deleteArticle,
+} from "@/api/admin";
 
 const addDialogVisible = ref(false);
+
+const articleDetail = ref({});
 
 const formItem = [
   {
@@ -167,9 +188,61 @@ const sizeChange = (val) => {
   handleSearch();
 };
 
+const handleEdit = (row) => {
+  if (row.id) {
+    getArticleDetail(row.id).then((res) => {
+      articleDetail.value = res;
+      addDialogVisible.value = true;
+    });
+  } else {
+    articleDetail.value = null;
+    addDialogVisible.value = true;
+  }
+};
+
 const handleSuccess = () => {
   pagination.currentPage = 1;
   handleSearch();
+};
+
+const handlePublish = (row) => {
+  ElMessageBox.confirm(`确定发布 ${row.title} 吗?`, "提示", {
+    confirmButtonText: "确定",
+    cancelButtonText: "取消",
+    type: "info",
+  }).then(() => {
+    publishArticle(row.id, { status: 1 }).then((res) => {
+      ElMessage.success(res.message || "发布文章成功");
+      handleSearch();
+    });
+  });
+};
+
+const handleOffline = (row) => {
+  ElMessageBox.confirm(`确定下线 ${row.title} 吗?`, "警告", {
+    confirmButtonText: "确定",
+    cancelButtonText: "取消",
+    type: "warning",
+  }).then(() => {
+    offlineArticle(row.id, { status: 2 }).then((res) => {
+      ElMessage.success(res.message || "下线文章成功");
+      handleSearch();
+    });
+  });
+};
+
+const handleDelete = (row) => {
+  ElMessageBox.confirm(`确定删除 ${row.title} 吗?`, "警告", {
+    confirmButtonText: "确定",
+    cancelButtonText: "取消",
+    type: "warning",
+  }).then(() => {
+    deleteArticle(row.id).then((res) => {
+      ElMessage.success("删除文章成功");
+      handleSearch();
+    });
+    console.log("删除");
+  });
 };
 
 onMounted(() => {

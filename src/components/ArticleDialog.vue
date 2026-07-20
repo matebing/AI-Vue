@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-    title="文章详情"
+    :title="isEdit ? '编辑文章' : '新增文章'"
     v-model="dialogVisible"
     width="50%"
     @close="handleClose"
@@ -100,14 +100,16 @@
         btnPreview ? "隐藏预览" : "预览效果"
       }}</el-button>
       <el-button @click="handleClose">取消</el-button>
-      <el-button @click="handleSubmit" :loading="loading">创建文章</el-button>
+      <el-button type="primary" @click="handleSubmit" :loading="loading">{{
+        isEdit ? "更新文章" : "创建文章"
+      }}</el-button>
     </template>
   </el-dialog>
 </template>
 <script setup>
 import { ElMessage } from "element-plus";
-import { ref, computed, reactive, nextTick } from "vue";
-import { uploadCover, createArticle } from "@/api/admin";
+import { ref, computed, reactive, nextTick, watch } from "vue";
+import { uploadCover, createArticle, updateArticle } from "@/api/admin";
 import { FILE_BASE_URL } from "@/config/index";
 import RichTextEditor from "@/components/RichTextEditor.vue";
 
@@ -124,6 +126,11 @@ const props = defineProps({
     type: Array,
     default: () => [],
   },
+  articleDetail: {
+    type: Object,
+    //定义成null是为了在弹窗里面判断是 新增 还是 编辑
+    default: null,
+  },
 });
 
 const emit = defineEmits(["update:modelValue", "success"]);
@@ -137,6 +144,12 @@ const btnPreview = ref(false);
 const imgUrl = ref("");
 
 const loading = ref(false);
+
+const businessId = ref("");
+
+const isEdit = computed(() => {
+  return !!props.articleDetail?.id;
+});
 
 const formData = reactive({
   title: "",
@@ -177,6 +190,22 @@ const commonTags = [
   "生活技巧",
 ];
 
+watch(
+  () => props.articleDetail,
+  (newVal) => {
+    if (newVal) {
+      //弹窗打开，表单创建是异步过程，需要等表单创建完成后再回填数据，否则会导致表单数据被覆盖掉
+      nextTick(() => {
+        //不能直接赋值，会丢失响应式
+        //做对象属性合并，浅拷贝，把第二个对象的属性合并到第一个对象中
+        Object.assign(formData, newVal);
+        imgUrl.value = FILE_BASE_URL + newVal.coverImage;
+        businessId.value = newVal.id;
+      });
+    }
+  },
+);
+
 const dialogVisible = computed({
   get: () => {
     return props.modelValue;
@@ -207,8 +236,8 @@ const beforeUpload = (file) => {
 };
 
 const handleUpload = async ({ file, name, type, size }) => {
-  const businessId = crypto.randomUUID();
-  const res = await uploadCover(file, businessId);
+  businessId.value = crypto.randomUUID();
+  const res = await uploadCover(file, businessId.value);
   imgUrl.value = FILE_BASE_URL + res.filePath;
   formData.coverImage = res.filePath;
 
@@ -247,23 +276,41 @@ const handleSubmit = () => {
         tags: formData.tagArr?.join(",") || "",
       };
       delete params.tagArr;
-      createArticle(params)
-        .then((res) => {
-          ElMessage.success("创建文章成功");
-          emit("success");
-          handleClose();
-        })
-        .finally(() => {
-          loading.value = false;
-        });
+      if (isEdit.value) {
+        updateArticle(props.articleDetail.id, params)
+          .then((res) => {
+            ElMessage.success(res.message || "更新文章成功");
+            emit("success");
+            handleClose();
+          })
+          .finally(() => {
+            loading.value = false;
+          });
+      } else {
+        params["id"] = businessId.value;
+        createArticle(params)
+          .then((res) => {
+            ElMessage.success(res.message || "创建文章成功");
+            emit("success");
+            handleClose();
+          })
+          .finally(() => {
+            loading.value = false;
+          });
+      }
     }
   });
 };
 
 const handleClose = () => {
   formRef.value.resetFields();
-  imgUrl.value = "";
-  dialogVisible.value = false;
+  businessId.value = null;
+  btnPreview.value = false;
+  formData.tagArr = [];
+  removeCover();
+
+  emit("update:modelValue", false);
+  // dialogVisible.value = false;
 };
 </script>
 <style lang="scss" scoped>

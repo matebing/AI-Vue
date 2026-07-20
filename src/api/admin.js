@@ -34,3 +34,28 @@ export function uploadCover(file, businessId) {
 export function createArticle(data) {
   return service.post("/knowledge/article", data);
 }
+
+// 文章详情
+export function getArticleDetail(id) {
+  return service.get(`/knowledge/article/${id}`);
+}
+
+// 编辑文章
+export function updateArticle(id, data) {
+  return service.put(`/knowledge/article/${id}`, data);
+}
+
+//发布文章
+export function publishArticle(id, data) {
+  return service.put(`/knowledge/article/${id}/status`, data);
+}
+
+//下线文章
+export function offlineArticle(id, data) {
+  return service.put(`/knowledge/article/${id}/status`, data);
+}
+
+//删除文章
+export function deleteArticle(id) {
+  return service.delete(`/knowledge/article/${id}`);
+}
