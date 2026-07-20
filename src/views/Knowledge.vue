@@ -5,7 +5,11 @@
         <el-button type="primary" @click="handleEdit({})">新增</el-button>
       </template>
     </PageHeader>
-    <TableSearch :formItem="formItem" @search="handleSearch" />
+    <TableSearch
+      :formItem="formItem"
+      @search="handleSearch"
+      class="knowledge-search"
+    />
     <el-table :data="articleList" class="knowledge-table">
       <el-table-column label="文章标题" fixed="left">
         <template #default="{ row }">
@@ -252,6 +256,9 @@ onMounted(() => {
 </script>
 <style lang="scss" scoped>
 .knowledge-container {
+  .knowledge-search {
+    margin-top: 25px;
+  }
   .knowledge-table {
     width: 100%;
     margin-top: 25px;

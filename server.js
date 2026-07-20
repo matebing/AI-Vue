@@ -553,6 +553,210 @@ app.delete("/knowledge/article/:id", (req, res) => {
   res.send(data);
 });
 
+// 资讯记录列表
+app.get("/psychological-chat/sessions", (req, res) => {
+  const data = {
+    code: "200",
+    msg: "操作成功",
+    data: {
+      records: [
+        {
+          id: 32534,
+          userId: 11500,
+          sessionTitle: "AI助手_2026/7/20 15:35:36",
+          startedAt: "2026-07-20 15:35:22",
+          durationMinutes: 58,
+          messageCount: 4,
+          lastMessageContent:
+            "哇～六个核桃！这个选择很养生呢！🌰  作为学生党，适当补充些坚果类食品对身体和大脑都很有帮助哦～ \n\n能感受到你是很懂得照顾自己的类型呢！特别是在学业繁忙的时候，选择这样健康的零食既能解馋又能补充营...",
+          lastMessageTime: "2026-07-20 15:35:52",
+        },
+        {
+          id: 32531,
+          userId: 11391,
+          userNickname: "wowowo",
+          sessionTitle: "小渡AI助手 - 2026/7/20 13:24:57",
+          startedAt: "2026-07-20 13:25:00",
+          durationMinutes: 188,
+          messageCount: 2,
+          lastMessageContent:
+            "很高兴听到你心情不错呀！😊 能感受到你的正能量呢～\n\n这种积极的状态是很珍贵的，要不要和我分享一下是什么让你感到开心呢？这样我们可以一起记住这份好心情✨\n\n或者，如果你愿意的话，也可以把这份好心情的...",
+          lastMessageTime: "2026-07-20 13:25:05",
+        },
+        {
+          id: 32530,
+          userId: 11391,
+          userNickname: "wowowo",
+          sessionTitle: "小渡AI助手 - 2026/7/20 12:32:57",
+          startedAt: "2026-07-20 12:32:59",
+          durationMinutes: 240,
+          messageCount: 4,
+          lastMessageContent:
+            "听到你想为父母分担压力，真的很暖心呢～(｡♡‿♡｡) \n\n能感受到你是个很有责任感和孝心的孩子。大三的你现在就在考虑就业问题，说明你很有规划意识呢！不过在这个过程中，也要记得照顾好自己哦～\n\n让我们一...",
+          lastMessageTime: "2026-07-20 13:21:09",
+        },
+        {
+          id: 32529,
+          userId: 11500,
+          sessionTitle: "AI助手_2026/7/20 11:35:44",
+          startedAt: "2026-07-20 11:35:30",
+          durationMinutes: 298,
+          messageCount: 4,
+          lastMessageContent:
+            "听到你说今天努力学习了，真的很为你开心呢！✨\n\n学习确实是件需要毅力和耐心的事情呢。可以和我分享一下：\n1. 今天学习了什么让你觉得有收获的内容吗？\n2. 学习过程中有遇到什么小困难或小成就吗？\n3....",
+          lastMessageTime: "2026-07-20 11:35:54",
+        },
+        {
+          id: 32523,
+          userId: 10726,
+          userNickname: "测试",
+          sessionTitle: "心理AI助手 - 2026/7/20 11:02:24",
+          startedAt: "2026-07-20 11:02:26",
+          durationMinutes: 331,
+          messageCount: 10,
+          lastMessageContent:
+            "太好了！选择安卓开发是个很棒的决定~ 以下为你量身定制的学习路径和高效学习建议，记得收藏哦！🌟\n\n📅 【3-6个月系统学习路径】\n\n阶段1：筑基期（1-2个月）\n✅ 核心语言：\n- Kotlin基...",
+          lastMessageTime: "2026-07-20 11:04:57",
+        },
+        {
+          id: 32521,
+          userId: 11676,
+          userNickname: "111",
+          sessionTitle: "宁渡AI助手 - 2026/7/20 10:44:11",
+          startedAt: "2026-07-20 10:44:16",
+          durationMinutes: 349,
+          messageCount: 2,
+          lastMessageContent:
+            "你好呀，很高兴见到你！😊 我能感受到你可能有一些心事想倾诉。作为大学生活中的心理陪伴者，我在这里安静地陪着你。最近是不是遇到什么困扰了呢？可以和我聊聊看~\n\n（轻轻递上一杯虚拟的热茶🍵）在这里你可...",
+          lastMessageTime: "2026-07-20 10:44:20",
+        },
+        {
+          id: 32517,
+          userId: 3507,
+          userNickname: "tom",
+          sessionTitle: "宁渡AI助手 - 2026/7/20 10:31:51",
+          startedAt: "2026-07-20 10:31:59",
+          durationMinutes: 361,
+          messageCount: 2,
+          lastMessageContent:
+            "听到你说考试考砸了，我能感受到你现在一定很难过。考试不如预期确实是件让人沮丧的事情呢 🫂\n\n作为大学生，我们都经历过类似的挫折。你还愿意跟我聊聊具体是什么科目没考好吗？或者现在的感受是怎样的？\n\n记...",
+          lastMessageTime: "2026-07-20 10:32:05",
+        },
+        {
+          id: 32516,
+          userId: 11728,
+          userNickname: "nihao",
+          sessionTitle: "MindFlow-2026/7/20 00:57:03",
+          startedAt: "2026-07-20 00:57:02",
+          durationMinutes: 936,
+          messageCount: 2,
+          lastMessageContent:
+            '我能理解你现在的感受，突然出现这些身体反应确实会让人很不安。这种情况很可能是焦虑发作的表现，很多大学生在压力大的时候都会经历类似的状况。🧡\n\n建议你现在先试试"54321"自我安抚法：\n5-找出5个...',
+          lastMessageTime: "2026-07-20 00:57:12",
+        },
+        {
+          id: 32515,
+          userId: 11728,
+          userNickname: "nihao",
+          sessionTitle: "MindFlow-2026/7/20 00:54:44",
+          startedAt: "2026-07-20 00:54:44",
+          durationMinutes: 939,
+          messageCount: 2,
+          lastMessageContent:
+            '我能理解失眠带来的困扰，特别是当大脑在夜晚特别活跃的时候真的很让人沮丧呢。😊 让我们一起来探索一些适合大学生的助眠方法：\n\n首先，可以试试"478呼吸法"：\n- 吸气4秒\n- 屏住呼吸7秒 \n- 缓...',
+          lastMessageTime: "2026-07-20 00:54:55",
+        },
+        {
+          id: 32514,
+          userId: 11728,
+          userNickname: "nihao",
+          sessionTitle: "MindFlow-2026/7/20 00:45:17",
+          startedAt: "2026-07-20 00:45:16",
+          durationMinutes: 948,
+          messageCount: 2,
+          lastMessageContent:
+            "我能感受到你现在的压力很大，找工作遇到困难再加上情感问题，确实会让人感到特别焦虑。😔\n\n先给你一个温暖的抱抱🤗，你愿意跟我具体说说这些烦恼吗？比如找工作方面，你遇到了什么困难？情感上又是什么让你觉...",
+          lastMessageTime: "2026-07-20 00:45:24",
+        },
+      ],
+      total: 22723,
+      size: 10,
+      current: 1,
+      pages: 2273,
+    },
+    message: "操作成功",
+    success: true,
+  };
+  res.send(data);
+});
+
+// 会话详情
+app.get(`/psychological-chat/sessions/:sessionIdId/messages`, (req, res) => {
+  const data = {
+    code: "200",
+    msg: "操作成功",
+    data: [
+      {
+        id: 75085,
+        sessionId: 32534,
+        senderType: 1,
+        senderTypeDesc: "用户",
+        messageType: 1,
+        messageTypeDesc: "文本",
+        content: "刚刚下楼买了吃的，很好吃",
+        createdAt: "2026-07-20 15:35:22",
+        contentLength: 12,
+        contentPreview: "刚刚下楼买了吃的，很好吃",
+      },
+      {
+        id: 75086,
+        sessionId: 32534,
+        senderType: 2,
+        senderTypeDesc: "AI助手",
+        messageType: 1,
+        messageTypeDesc: "文本",
+        content:
+          "听起来你今天遇到了一件让人开心的小确幸呢！😊 能和我分享一下是什么美食让你这么开心吗？有时候生活中这些简单的美好时刻，比如吃到一份美味的食物，真的能给我们带来满满的幸福感呢~\n\n你是在学校附近买的吗？最近天气转凉，吃到热乎乎的美食是不是特别治愈？我也为你感到开心！这种愉悦的时刻值得好好享受~\n\n要记得多记录这些让你感到快乐的小事哦，它们都是生活中闪闪发光的碎片✨",
+        aiModel: "openai",
+        createdAt: "2026-07-20 15:35:28",
+        contentLength: 183,
+        contentPreview:
+          "听起来你今天遇到了一件让人开心的小确幸呢！😊 能和我分享一下是什么美食让你这么开心吗？有时候生活中这些简单的美好时刻，比如吃到一份美味的食物，真的能给我们带来满满的幸福感呢~\n\n你是在学校附近买的吗...",
+      },
+      {
+        id: 75087,
+        sessionId: 32534,
+        senderType: 1,
+        senderTypeDesc: "用户",
+        messageType: 1,
+        messageTypeDesc: "文本",
+        content: "买的六个核桃",
+        createdAt: "2026-07-20 15:35:45",
+        contentLength: 6,
+        contentPreview: "买的六个核桃",
+      },
+      {
+        id: 75088,
+        sessionId: 32534,
+        senderType: 2,
+        senderTypeDesc: "AI助手",
+        messageType: 1,
+        messageTypeDesc: "文本",
+        content:
+          '哇～六个核桃！这个选择很养生呢！🌰  作为学生党，适当补充些坚果类食品对身体和大脑都很有帮助哦～ \n\n能感受到你是很懂得照顾自己的类型呢！特别是在学业繁忙的时候，选择这样健康的零食既能解馋又能补充营养，一举两得～ 你平时就喜欢喝这种坚果饮料吗？还是今天突然想换换口味呢？\n\n最近天气干燥，核桃这类坚果确实很适合秋天呢～ 不过要提醒一下如果晚上喝的话建议早点喝，因为坚果类饮品还是有点"份量"的～ 😄 \n\n要记得好好享受这份小确幸哦！你还有其他喜欢的健康小零食可以和我分享吗？',
+        aiModel: "openai",
+        createdAt: "2026-07-20 15:35:52",
+        contentLength: 239,
+        contentPreview:
+          "哇～六个核桃！这个选择很养生呢！🌰  作为学生党，适当补充些坚果类食品对身体和大脑都很有帮助哦～ \n\n能感受到你是很懂得照顾自己的类型呢！特别是在学业繁忙的时候，选择这样健康的零食既能解馋又能补充营...",
+      },
+    ],
+    message: "操作成功",
+    success: true,
+  };
+  res.send(data);
+});
+
 app.listen(5000, () => {
   console.log("服务器启动成功，请求地址：http://localhost:5000");
 });

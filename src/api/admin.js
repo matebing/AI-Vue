@@ -59,3 +59,13 @@ export function offlineArticle(id, data) {
 export function deleteArticle(id) {
   return service.delete(`/knowledge/article/${id}`);
 }
+
+// 咨询记录列表
+export function getConsultationsList(params) {
+  return service.get("/psychological-chat/sessions", { params });
+}
+
+// 咨询记录详情
+export function getSessionDetail(sessionId) {
+  return service.get(`/psychological-chat/sessions/${sessionId}/messages`);
+}
