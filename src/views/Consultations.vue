@@ -4,7 +4,7 @@
     <el-table :data="tableData" class="consultations-table">
       <el-table-column label="会话ID" width="100">
         <template #default="{ row }">
-          <el-avator>{{ row.userNickname }}</el-avator>
+          <el-avatar>{{ row.userNickname }}</el-avatar>
         </template>
       </el-table-column>
       <el-table-column label="情绪日志">
@@ -89,9 +89,7 @@
         </div>
       </div>
       <template #footer>
-        <el-button @click="detailVisible = false"
-          >关闭</el-button
-        >
+        <el-button @click="detailVisible = false">关闭</el-button>
       </template>
     </el-dialog>
   </div>

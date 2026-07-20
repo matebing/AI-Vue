@@ -257,7 +257,7 @@ onMounted(() => {
 <style lang="scss" scoped>
 .knowledge-container {
   .knowledge-search {
-    margin-top: 25px;
+    margin-top: 20px;
   }
   .knowledge-table {
     width: 100%;
