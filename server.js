@@ -757,6 +757,72 @@ app.get(`/psychological-chat/sessions/:sessionIdId/messages`, (req, res) => {
   res.send(data);
 });
 
+// 情绪日志列表
+app.get("/emotion-diary/admin/page", (req, res) => {
+  const data = {
+    code: "200",
+    msg: "操作成功",
+    data: {
+      records: [
+        {
+          id: 1375,
+          userId: 11662,
+          username: "liutieshan",
+          nickname: "lts",
+          diaryDate: "2026-07-21",
+          moodScore: 7,
+          dominantEmotion: "开心",
+          diaryContent: "出去玩",
+          diaryContentPreview: "出去玩",
+          sleepQuality: 3,
+          stressLevel: 3,
+          createdAt: "2026-07-21 14:37:30",
+          updatedAt: "2026-07-21 14:37:30",
+          hasAiEmotionAnalysis: false,
+          aiAnalysisStatus: "PENDING",
+          contentLength: 3,
+        },
+        {
+          id: 1369,
+          userId: 11625,
+          username: "annan",
+          nickname: "annan",
+          diaryDate: "2026-07-20",
+          moodScore: 10,
+          dominantEmotion: "平静",
+          emotionTriggers: "afa",
+          diaryContent: "sdgas000",
+          diaryContentPreview: "sdgas123",
+          sleepQuality: 2,
+          stressLevel: 1,
+          createdAt: "2026-07-20 01:38:09",
+          updatedAt: "2026-07-20 01:38:09",
+          hasAiEmotionAnalysis: false,
+          aiAnalysisStatus: "PENDING",
+          contentLength: 5,
+        },
+      ],
+      total: 2,
+      size: 10,
+      current: 1,
+      pages: 1,
+    },
+    message: "操作成功",
+    success: true,
+  };
+  res.send(data);
+});
+// 删除情绪日志
+app.delete(`/emotion-diary/admin/:id`, (req, res) => {
+  const data = {
+    code: "200",
+    msg: "操作成功",
+    message: "操作成功",
+    success: true,
+  };
+  res.send(data);
+});
+
 app.listen(5000, () => {
   console.log("服务器启动成功，请求地址：http://localhost:5000");
 });

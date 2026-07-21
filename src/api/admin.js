@@ -74,3 +74,8 @@ export function getSessionDetail(sessionId) {
 export function getEmotionalList(params) {
   return service.get("/emotion-diary/admin/page", { params });
 }
+
+// 删除情绪日志
+export function deleteEmotional(id) {
+  return service.delete(`/emotion-diary/admin/${id}`);
+}
