@@ -66,6 +66,18 @@ app.post("/user/login", (request, response) => {
   };
   response.send(data);
 });
+// 退出登录
+app.post("/user/logout", (req, res) => {
+  const data = {
+    code: "200",
+    flag: true,
+    msg: "操作成功",
+    data: "退出登录成功",
+    message: "操作成功",
+    success: true,
+  };
+  res.send(data);
+});
 // 分类列表
 app.get("/knowledge/category/tree", (request, response) => {
   const data = {
