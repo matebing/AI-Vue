@@ -7,7 +7,10 @@
       </div>
       <div class="nav-section">
         <router-link to="/frontend" class="nav-link">首页</router-link>
-        <router-link v-if="isLogin" to="/frontend/consultation" class="nav-link"
+        <router-link
+          v-if="isLogin"
+          to="/frontend/aiConsultation"
+          class="nav-link"
           >AI咨询</router-link
         >
         <router-link
@@ -19,8 +22,14 @@
         <router-link to="/frontend/knowledge" class="nav-link"
           >知识库</router-link
         >
-        <el-button v-if="isLogin" text size="medium" class="logout-btn"
-          >退出登录</el-button
+        <el-button
+          v-if="isLogin"
+          text
+          size="medium"
+          class="logout-btn"
+          @click="handleLogout"
+        >
+          退出登录</el-button
         >
         <template v-else>
           <router-link to="/auth/login" class="nav-link">登录</router-link>
@@ -42,8 +51,28 @@
 </template>
 <script setup>
 import { ref, onMounted } from "vue";
+import { logout } from "@/api/common";
+import { useRouter } from "vue-router";
+import { ElMessage, ElMessageBox } from "element-plus";
+
+const router = useRouter();
 const brandLogo = new URL("@/assets/images/机器人.png", import.meta.url).href;
 const isLogin = ref(false);
+
+const handleLogout = () => {
+  ElMessageBox.confirm("确定退出登录吗？", "提示", {
+    confirmButtonText: "确定",
+    cancelButtonText: "取消",
+    type: "warning",
+  }).then(() => {
+    logout().then(() => {
+      ElMessage.success("已退出登录");
+      localStorage.removeItem("token");
+      localStorage.removeItem("userInfo");
+      router.push("/auth/login");
+    });
+  });
+};
 
 onMounted(() => {
   isLogin.value = localStorage.getItem("token") !== null;

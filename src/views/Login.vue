@@ -90,7 +90,7 @@ const handleLogin = async (formEl) => {
           router.push("/back/dashboard");
         } else {
           // 普通用户跳转首页
-          router.push({ name: "home" });
+          router.push({ name: "Home" });
         }
       });
     }

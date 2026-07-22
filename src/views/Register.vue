@@ -76,7 +76,12 @@
 </template>
 <script setup>
 import { ref, reactive } from "vue";
+import { register } from "@/api/common";
+import { useRouter } from "vue-router";
+import { ElMessage } from "element-plus";
+
 const formRef = ref(null);
+const router = useRouter();
 const formData = reactive({
   username: "",
   email: "",
@@ -94,12 +99,23 @@ const formRules = reactive({
   confirmPassword: [{ required: true, message: "请确认密码", trigger: "blur" }],
 });
 
-const handleSubmit = async (formEl) => {
+const handleSubmit = (formEl) => {
   if (!formEl) {
     return;
   }
-  formEl.validate((res) => {
-    if (res) {
+  formEl.validate((valid) => {
+    if (valid) {
+      register(formData).then(({ data }) => {
+        if (!data) {
+          ElMessage.success("注册成功");
+          // router.push({ name: "Login" });
+          router.push("/auth/login");
+          formRef.value.resetFields();
+        }
+        if (data.code === "BUSINESS_ERROR") {
+          ElMessage.error(data.message);
+        }
+      });
       console.log("表单数据:", formData);
     }
   });

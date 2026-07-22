@@ -2667,6 +2667,37 @@ app.get("/data-analytics/overview", (req, res) => {
   res.send(data);
 });
 
+app.post("/user/add", (req, res) => {
+  const { username, email, nickname, phone, gender, userType } = req.body;
+
+  const genderMap = { 0: "未知", 1: "男", 2: "女" };
+  const userTypeMap = { 1: "普通用户", 2: "管理员" };
+
+  const data = {
+    code: "200",
+    msg: "注册成功",
+    data: {
+      id: Math.floor(Math.random() * 100000) + 10000,
+      username,
+      email,
+      nickname,
+      phone,
+      gender,
+      genderDisplayName: genderMap[gender] || "未知",
+      userType,
+      userTypeDisplayName: userTypeMap[userType] || "普通用户",
+      status: 1,
+      statusDisplayName: "正常",
+      displayName: nickname,
+      createdAt: "2026-07-22 13:30:01",
+      updatedAt: "2026-07-22 13:30:01",
+    },
+    message: "注册成功",
+    success: true,
+  };
+  res.send(data);
+});
+
 app.listen(5000, () => {
   console.log("服务器启动成功，请求地址：http://localhost:5000");
 });

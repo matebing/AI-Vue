@@ -89,9 +89,9 @@ const frontendRoutes = [
         component: () => import("@/views/frontend/Home.vue"),
       },
       {
-        name: "Consultation",
-        path: "consultation",
-        component: () => import("@/views/frontend/Consultation.vue"),
+        name: "AiConsultation",
+        path: "aiConsultation",
+        component: () => import("@/views/frontend/AiConsultation.vue"),
       },
       {
         name: "EmotionDiary",
@@ -112,39 +112,39 @@ const router = createRouter({
 });
 
 // 路由前置守卫，路由跳转之前处理
-// router.beforeEach((to, from, next) => {
-//   // 检查用户是否登录
-//   const token = localStorage.getItem("token");
-//   // 当前用户是否登录
-//   if (token) {
-//     //
-//     const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-//     if (userInfo.userType == 2) {
-//       // 后台用户
-//       if (to.path.startsWith("/back")) {
-//         next();
-//       } else {
-//         next("/back/dashboard");
-//       }
-//     } else if (userInfo.userType == 1) {
-//       // 前台用户(用户端账号)只能访问前台路由
-//       if (to.path.startsWith("/back") || to.path.startsWith("/auth")) {
-//         next("/");
-//       } else {
-//         next();
-//       }
-//     }
-//   } else {
-//     // 需要区分是前台页面还是后台页面，前台系统未登录的情况下也能访问个别页面，后台系统未登录的情况下不能访问任何业务页面，只能访问登录、注册页面
-//     if (to.path.startsWith("/back")) {
-//       // 后台系统未登录的情况下不能访问任何业务页面，只能访问登录、注册页面
-//       next({ name: "Login" });
-//       // next("/auth/login");
-//     } else {
-//       // 前台系统未登录的情况下也能访问个别页面
-//       next();
-//     }
-//   }
-// });
+router.beforeEach((to, from, next) => {
+  // 检查用户是否登录
+  const token = localStorage.getItem("token");
+  // 当前用户是否登录
+  if (token) {
+    //
+    const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+    if (userInfo.userType == 2) {
+      // 后台用户
+      if (to.path.startsWith("/back")) {
+        next();
+      } else {
+        next("/back/dashboard");
+      }
+    } else if (userInfo.userType == 1) {
+      // 前台用户(用户端账号)只能访问前台路由
+      if (to.path.startsWith("/back") || to.path.startsWith("/auth")) {
+        next("/frontend");
+      } else {
+        next();
+      }
+    }
+  } else {
+    // 需要区分是前台页面还是后台页面，前台系统未登录的情况下也能访问个别页面，后台系统未登录的情况下不能访问任何业务页面，只能访问登录、注册页面
+    if (to.path.startsWith("/back")) {
+      // 后台系统未登录的情况下不能访问任何业务页面，只能访问登录、注册页面
+      next({ name: "Login" });
+      // next("/auth/login");
+    } else {
+      // 前台系统未登录的情况下也能访问个别页面
+      next();
+    }
+  }
+});
 
 export default router;

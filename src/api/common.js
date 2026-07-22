@@ -1,4 +1,8 @@
 import service from "@/utils/request";
+// 注册
+export function register(data) {
+  return service.post("/user/add", data);
+}
 
 // 登录
 export function login(data) {
@@ -8,9 +12,4 @@ export function login(data) {
 // 退出登录
 export function logout() {
   return service.post("/user/logout");
-}
-
-// 注册
-export function register(data) {
-  return service.post("/user/add", data);
 }
