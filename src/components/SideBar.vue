@@ -43,7 +43,7 @@ const iconUrl = new URL("@/assets/images/机器人.png", import.meta.url).href;
 const selectMenu = (key) => {
   const activeUrl = `${path}/${key.index}`;
   router.push(activeUrl);
-  console.log(activeUrl);
+  console.log("路由", activeUrl, key);
 };
 
 console.log("路由", useRoute(), "路由器", useRouter());

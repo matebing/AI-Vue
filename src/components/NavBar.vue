@@ -28,7 +28,7 @@
 import { useAdminStore } from "@/store/admin";
 import { useRouter, useRoute } from "vue-router";
 import { ElMessageBox } from "element-plus";
-import { logout } from "@/api/admin";
+import { logout } from "@/api/common";
 
 const router = useRouter();
 const route = useRoute();

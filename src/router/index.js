@@ -99,9 +99,9 @@ const frontendRoutes = [
         component: () => import("@/views/frontend/EmotionDiary.vue"),
       },
       {
-        name: "Knowledge",
-        path: "knowledge",
-        component: () => import("@/views/frontend/Knowedge.vue"),
+        name: "Knowledges",
+        path: "knowledges",
+        component: () => import("@/views/frontend/Knowedges.vue"),
       },
     ],
   },

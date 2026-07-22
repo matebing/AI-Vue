@@ -55,7 +55,7 @@
 </template>
 <script setup>
 import { ref, reactive } from "vue";
-import { login } from "@/api/admin";
+import { login } from "@/api/common";
 import { ElMessage } from "element-plus";
 import { useRouter } from "vue-router";
 

@@ -109,7 +109,7 @@
 <script setup>
 import { ElMessage } from "element-plus";
 import { ref, computed, reactive, nextTick, watch } from "vue";
-import { uploadCover, createArticle, updateArticle } from "@/api/admin";
+import { uploadCover, createArticle, updateArticle } from "@/api/backend";
 import { FILE_BASE_URL } from "@/config/index";
 import RichTextEditor from "@/components/RichTextEditor.vue";
 
