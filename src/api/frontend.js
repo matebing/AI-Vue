@@ -14,3 +14,8 @@ export const getSessionList = (params) => {
 export const deleteSession = (sessionId) => {
   return service.delete(`/psychological-chat/sessions/${sessionId}`);
 };
+
+//获取会话消息列表
+export const getSessionMessages = (sessionId) => {
+  return service.get(`/psychological-chat/sessions/${sessionId}/messages`);
+};

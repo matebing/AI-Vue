@@ -566,7 +566,7 @@ app.delete("/knowledge/article/:id", (req, res) => {
 });
 
 // 资讯记录列表
-app.get("/psychological-chat/sessions", (req, res) => {
+app.get("/psychological-chat/sessions0", (req, res) => {
   const data = {
     code: "200",
     msg: "操作成功",
@@ -703,7 +703,7 @@ app.get("/psychological-chat/sessions", (req, res) => {
 });
 
 // 会话详情
-app.get(`/psychological-chat/sessions/:sessionIdId/messages`, (req, res) => {
+app.get(`/psychological-chat/sessions0/:sessionIdId/messages`, (req, res) => {
   const data = {
     code: "200",
     msg: "操作成功",
@@ -2696,6 +2696,96 @@ app.post("/user/add", (req, res) => {
     success: true,
   };
   res.send(data);
+});
+
+//获取历史会话列表
+app.get("/psychological-chat/sessions", (req, res) => {
+  const data = {
+    code: "200",
+    msg: "操作成功",
+    data: {
+      records: [
+        {
+          id: 32733,
+          userId: 11803,
+          userNickname: "fasd",
+          sessionTitle: "AI助手-2026/7/23 13:27:04",
+          startedAt: "2026-07-23 13:27:04",
+          durationMinutes: 0,
+          messageCount: 1,
+          lastMessageContent: "今天天气怎么样",
+          lastMessageTime: "2026-07-23 13:27:04",
+        },
+        {
+          id: 32728,
+          userId: 11803,
+          userNickname: "fasd",
+          sessionTitle: "AI助手-2026/7/23 11:01:23",
+          startedAt: "2026-07-23 11:01:23",
+          durationMinutes: 145,
+          messageCount: 1,
+          lastMessageContent: "今天会下雨吗",
+          lastMessageTime: "2026-07-23 11:01:23",
+        },
+      ],
+      total: 2,
+      size: 10,
+      current: 1,
+      pages: 1,
+    },
+    message: "操作成功",
+    success: true,
+  };
+  res.send(data);
+});
+
+app.delete("/psychological-chat/sessions/:sessionId", (req, res) => {
+  const data = {
+    code: "200",
+    msg: "操作成功",
+    data: true,
+    message: "操作成功",
+    success: true,
+  };
+  res.send(data);
+});
+
+app.get("/psychological-chat/sessions/:sessionId/messages", (req, res) => {
+  const data1 = {
+    code: "200",
+    msg: "操作成功",
+    data: [
+      {
+        id: 75552,
+        sessionId: 32728,
+        senderType: 1,
+        senderTypeDesc: "用户",
+        messageType: 1,
+        messageTypeDesc: "文本",
+        content: "今天会下雨吗",
+        createdAt: "2026-07-23 11:01:23",
+        contentLength: 6,
+        contentPreview: "今天会下雨吗",
+      },
+      {
+        id: 75553,
+        sessionId: 32728,
+        senderType: 2,
+        senderTypeDesc: "AI",
+        messageType: 1,
+        messageTypeDesc: "文本",
+        content:
+          "## 天气查询结果\n\n根据目前的气象数据，**今天不会下雨**，天气状况如下：\n\n- **天气**：晴转多云\n- **温度**：24-30°C\n- **风力**：微风\n\n> 小贴士：虽然今天不下雨，但紫外线较强，出门记得做好防晒哦~\n\n如果你需要更详细的信息，可以查看 [天气预报网站](https://weather.example.com)。\n\n```javascript\nconst weather = {\n  rain: false,\n  temperature: '24-30°C',\n  uvIndex: '高'\n};\n```",
+        createdAt: "2026-07-23 11:01:25",
+        contentLength: 328,
+        contentPreview:
+          "## 天气查询结果\n\n根据目前的气象数据，**今天不会下雨**，天气状况如下...",
+      },
+    ],
+    message: "操作成功",
+    success: true,
+  };
+  res.send(data1);
 });
 
 app.listen(5000, () => {

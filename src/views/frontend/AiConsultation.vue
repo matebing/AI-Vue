@@ -82,7 +82,64 @@
       </div>
       <!-- 聊天消息区 -->
       <div class="chat-messages">
-        <div v-if="messages.length"></div>
+        <div
+          v-if="messages.length"
+          v-for="msg in messages"
+          :key="msg.id"
+          :class="{
+            'message-item': true,
+            'user-message': msg.senderType === 1,
+            'ai-message': msg.senderType === 2,
+          }"
+        >
+          <div class="message-avatar">
+            <el-image
+              v-if="msg.senderType === 1"
+              :src="userUrl"
+              style="width: 18px; height: 18px"
+            ></el-image>
+            <el-image
+              v-else
+              :src="robotUrl"
+              style="width: 18px; height: 18px"
+            ></el-image>
+          </div>
+          <div class="message-content">
+            <div message-bubble>
+              <!-- AI助手输入中指示器 -->
+              <div
+                v-if="msg.senderType === 2 && isAiTying && !msg.content"
+                class="typing-indicator"
+              >
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+              </div>
+              <!-- AI错误提示 -->
+              <div v-else-if="msg.isError" class="error-message">
+                <p>{{ msg.content }}</p>
+              </div>
+              <!-- AI正常返回消息 -->
+              <MarkdownRenderer
+                v-else-if="msg.senderType === 2"
+                :content="msg.content"
+                :isAiMessage="true"
+              ></MarkdownRenderer>
+              <!-- 用户消息消息 -->
+              <p
+                v-else-if="msg.content"
+                v-html="formatUserMessage(msg.content)"
+              ></p>
+            </div>
+            <div class="message-tiem">
+              {{
+                msg.senderType === 2 && isAiTying
+                  ? "正在输入中..."
+                  : msg.createdAt
+              }}
+            </div>
+          </div>
+        </div>
         <div v-else class="message-item ai-message">
           <div class="message-avatar">
             <el-image :src="robotUrl" style="width: 18px; height: 18px" />
@@ -110,8 +167,17 @@
             class="message-input"
             clearable
           />
+          <div class="input-footer">
+            <span>按Enter发送，Shift+Enter换行</span>
+            <span>{{ userMessage.length }} / 500</span>
+          </div>
         </div>
-        <el-button type="primary" class="send-btn" @click="sendMessage">
+        <el-button
+          :disabled="!userMessage.trim() || userMessage.length > 500"
+          type="primary"
+          class="send-btn"
+          @click="sendMessage"
+        >
           <el-icon><Promotion /></el-icon>
         </el-button>
       </div>
@@ -120,11 +186,15 @@
 </template>
 <script setup>
 import { ref, onMounted } from "vue";
-const heartUrl = new URL("@/assets/images/like.png", import.meta.url).href;
-const robotUrl = new URL("@/assets/images/robot-fill.png", import.meta.url)
-  .href;
+import MarkdownRenderer from "@/components/MarkdownRenderer.vue";
+
 import { ElMessage } from "element-plus";
-import { startSession, getSessionList, deleteSession } from "@/api/frontend";
+import {
+  startSession,
+  getSessionList,
+  deleteSession,
+  getSessionMessages,
+} from "@/api/frontend";
 
 //定义对话消息
 const messages = ref([]);
@@ -139,6 +209,11 @@ const currentSession = ref(null);
 
 //历史会话列表
 const sessionList = ref([]);
+
+const heartUrl = new URL("@/assets/images/like.png", import.meta.url).href;
+const robotUrl = new URL("@/assets/images/robot-fill.png", import.meta.url)
+  .href;
+const userUrl = new URL("@/assets/images/users.png", import.meta.url).href;
 
 //处理键盘事件
 const handleKeyDown = (e) => {
@@ -160,7 +235,7 @@ const sendMessage = () => {
   const message = userMessage.value.trim();
   userMessage.value = "";
   //如果没有会话，或者临时会话，需要创建新的会话
-  if (currentSession.value.status === "TEMP") {
+  if (currentSession.value || currentSession.value.status === "TEMP") {
     startNewSession(message);
   }
 };
@@ -220,10 +295,27 @@ const querySessionList = () => {
 };
 
 //获取会话数据
-const selectSession = (session) => {};
+const selectSession = (session) => {
+  //查询会话消息列表
+  getSessionMessages(session.id).then((res) => {
+    messages.value = res;
+    console.log("132", res);
+  });
+};
 
 //删除会话
-const handleDelete = (session) => {};
+const handleDelete = (session) => {
+  deleteSession(session.id).then(() => {
+    ElMessage.success("会话删除成功");
+    //更新历史会话列表
+    querySessionList();
+  });
+};
+
+//格式化用户信息
+const formatUserMessage = (message) => {
+  return message.replace(/\n/g, "<br>");
+};
 
 onMounted(() => {
   //初始化时创建新的会话
