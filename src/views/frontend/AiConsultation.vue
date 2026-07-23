@@ -16,6 +16,76 @@
           在线服务中
         </div>
       </div>
+      <!-- 情绪花园 -->
+      <div class="emotion-garden">
+        <div class="garden-header">
+          <div class="garden-title">情绪花园</div>
+        </div>
+        <div class="emotion-info">
+          <div class="emotion-name">中性</div>
+          <div class="emotion-score">50</div>
+        </div>
+        <div class="warm-tips">
+          <div class="emotion-status-text">
+            <span class="status-label">今天感觉</span>
+            <span class="status-emotion">{{
+              currentEmotion.isNegative ? "需要关注" : "很不错"
+            }}</span>
+          </div>
+          <div class="emotion-intensity">
+            <span class="intensity-dots">
+              <span
+                v-for="dot in 3"
+                :key="dot"
+                :class="{
+                  dot: true,
+                  active: getEmotionCount(currentEmotion.emotionScore) >= dot,
+                }"
+              ></span>
+              <span class="intensity-text">
+                {{ getRiskText(currentEmotion.riskLevel) }}
+                <!-- {{ getRiskText() }} -->
+              </span>
+            </span>
+          </div>
+          <!-- 温暖建议卡片 -->
+          <div class="warm-suggestion" v-if="currentEmotion.suggestion">
+            <div class="suggestion-icon">💝</div>
+            <div class="suggestion-content">
+              <div class="suggestion-title">给你的小建议</div>
+              <div class="suggestion-text">{{ currentEmotion.suggestion }}</div>
+            </div>
+          </div>
+          <!-- 治愈小行动 -->
+          <div
+            class="healing-actions"
+            v-if="currentEmotion.improvementSuggestions.length > 0"
+          >
+            <div class="actions-title">治愈小行动</div>
+            <div class="actions-list">
+              <div
+                v-for="action in currentEmotion.improvementSuggestions"
+                :key="action"
+                class="action-item"
+              >
+                <div class="action-icon">✨</div>
+                <div class="action-text">{{ action }}</div>
+              </div>
+            </div>
+          </div>
+          <!-- 风险提示 -->
+          <div
+            class="risk-notice"
+            v-if="currentEmotion.isNegative && currentEmotion.riskLevel > 1"
+          >
+            <div class="notice-icon">🤗</div>
+            <div class="notice-content">
+              <div class="notice-title">温馨提醒</div>
+              <div class="notice-text">{{ currentEmotion.riskNotice }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
       <!-- 历史会话列表 -->
       <div class="session-history">
         <h4 class="section-title">会话列表</h4>
@@ -82,8 +152,20 @@
       </div>
       <!-- 聊天消息区 -->
       <div class="chat-messages">
+        <div v-if="messages.length === 0" class="message-item ai-message">
+          <div class="message-avatar">
+            <el-image :src="robotUrl" style="width: 18px; height: 18px" />
+          </div>
+          <div class="message-content">
+            <div class="message-bubble">
+              <p>
+                您好！我是小暖，您的AI心理健康助手。很高兴陪伴您，为您提供温暖的心理支持。请告诉我，今天您感觉怎么样？有什么想要分享的吗？
+              </p>
+            </div>
+            <div class="message-time">刚刚</div>
+          </div>
+        </div>
         <div
-          v-if="messages.length"
           v-for="msg in messages"
           :key="msg.id"
           :class="{
@@ -140,19 +222,6 @@
             </div>
           </div>
         </div>
-        <div v-else class="message-item ai-message">
-          <div class="message-avatar">
-            <el-image :src="robotUrl" style="width: 18px; height: 18px" />
-          </div>
-          <div class="message-content">
-            <div class="message-bubble">
-              <p>
-                您好！我是小暖，您的AI心理健康助手。很高兴陪伴您，为您提供温暖的心理支持。请告诉我，今天您感觉怎么样？有什么想要分享的吗？
-              </p>
-            </div>
-            <div class="message-time">刚刚</div>
-          </div>
-        </div>
       </div>
       <!-- 聊天输入区 -->
       <div class="chat-input">
@@ -196,6 +265,7 @@ import {
   getSessionList,
   deleteSession,
   getSessionMessages,
+  getEmotionAnalysis,
 } from "@/api/frontend";
 
 //定义对话消息
@@ -212,10 +282,45 @@ const currentSession = ref(null);
 //历史会话列表
 const sessionList = ref([]);
 
+//情绪花园
+const currentEmotion = ref({
+  primaryEmotion: "中性",
+  emotionScore: 50,
+  isNegative: false,
+  riskLevel: "中",
+  suggestion: "情绪状态平稳",
+  improvementSuggestions: [],
+});
+
 const heartUrl = new URL("@/assets/images/like.png", import.meta.url).href;
 const robotUrl = new URL("@/assets/images/robot-fill.png", import.meta.url)
   .href;
 const userUrl = new URL("@/assets/images/users.png", import.meta.url).href;
+
+const getEmotionCount = (score) => {
+  if (score >= 61) {
+    return 3;
+  }
+  if (score >= 31) {
+    return 2;
+  }
+  return 1;
+};
+
+const getRiskText = (level) => {
+  switch (level) {
+    case 0:
+      return "正常";
+    case 1:
+      return "关注";
+    case 2:
+      return "预警";
+    case 3:
+      return "危机";
+    default:
+      return "正常";
+  }
+};
 
 //处理键盘事件
 const handleKeyDown = (e) => {
@@ -340,6 +445,10 @@ const startStreamingChat = (sessionId, userMessage) => {
       if (eventName === "done") {
         isAiTying.value = false;
         ctrl.abort();
+        //查询情绪分析结果
+        queryEmotionAnalysis(sessionId);
+        //更新历史会话列表
+        querySessionList();
         return;
       }
       const payload = JSON.parse(raw);
@@ -359,6 +468,9 @@ const startStreamingChat = (sessionId, userMessage) => {
     },
     onclose: () => {
       // 开始情绪花园
+      queryEmotionAnalysis(sessionId);
+      //更新历史会话列表
+      querySessionList();
     },
   });
 };
@@ -384,6 +496,17 @@ const initSession = () => {
   currentSession.value = newSession;
 };
 
+const queryEmotionAnalysis = (sessionId) => {
+  //确保sessionId格式正确
+  const id = sessionId.toString().startsWith("session_")
+    ? sessionId
+    : `session_${sessionId}`;
+  getEmotionAnalysis(id).then((res) => {
+    currentEmotion.value = res;
+    console.log("情绪状态", res);
+  });
+};
+
 const querySessionList = () => {
   getSessionList({
     pageNum: 1,
@@ -400,6 +523,8 @@ const selectSession = (session) => {
   getSessionMessages(session.id).then((res) => {
     messages.value = res;
   });
+  //查询情绪分析结果
+  queryEmotionAnalysis(session.id);
   //更新当前会话对象数据
   const sessionData = {
     sessionId: `session_${session.id}`,

@@ -1,6 +1,6 @@
 import service from "@/utils/request";
 
-// 开启新的会话
+//开启新的会话
 export const startSession = (data) => {
   return service.post("/psychological-chat/session/start", data);
 };
@@ -18,4 +18,9 @@ export const deleteSession = (sessionId) => {
 //获取会话消息列表
 export const getSessionMessages = (sessionId) => {
   return service.get(`/psychological-chat/sessions/${sessionId}/messages`);
+};
+
+//获取情绪分析结果
+export const getEmotionAnalysis = (sessionId) => {
+  return service.get(`/psychological-chat/session/${sessionId}/emotion`);
 };

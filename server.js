@@ -2806,6 +2806,29 @@ app.post("/psychological-chat/session/start", (req, res) => {
   };
   res.send(data);
 });
+
+app.get("/psychological-chat/session/:sessionId/emotion", (req, res) => {
+  const data = {
+    code: "200",
+    msg: "操作成功",
+    data: {
+      primaryEmotion: "中性",
+      emotionScore: 50,
+      isNegative: false,
+      riskLevel: 0,
+      suggestion: "情绪状态平稳，慢慢来就好",
+      icon: "😐",
+      label: "平静",
+      riskDescription: "当前情绪状态稳定，无需特别关注",
+      improvementSuggestions: ["保持规律作息", "适当运动", "与朋友交流"],
+      timestamp: 1784806366599,
+    },
+    message: "操作成功",
+    success: true,
+  };
+  res.send(data);
+});
+
 app.post("/psychological-chat/stream", (req, res) => {
   console.log("收到流式请求:", req.body);
 
