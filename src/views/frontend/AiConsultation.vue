@@ -187,6 +187,8 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import MarkdownRenderer from "@/components/MarkdownRenderer.vue";
+//引入调用流式接口的方法，用于获取AI助手的流式回复，类似axios
+import { fetchEventSource } from "@microsoft/fetch-event-source";
 
 import { ElMessage } from "element-plus";
 import {
@@ -235,8 +237,17 @@ const sendMessage = () => {
   const message = userMessage.value.trim();
   userMessage.value = "";
   //如果没有会话，或者临时会话，需要创建新的会话
-  if (currentSession.value || currentSession.value.status === "TEMP") {
+  if (currentSession.value && currentSession.value.status === "TEMP") {
     startNewSession(message);
+  } else {
+    //继续现有会话
+    messages.value.push({
+      id: Date.now(),
+      senderType: 1,
+      content: message,
+      createdAt: new Date().toISOString(),
+    });
+    startStreamingChat(currentSession.value.sessionId, message);
   }
 };
 
@@ -265,11 +276,100 @@ const startNewSession = (message) => {
       // 否则创建新的会话
       currentSession.value = sessionData;
     }
-    currentSession.value = res.data;
-    console.log(res);
+    messages.value.push({
+      id: Date.now(),
+      senderType: 1,
+      content: message,
+      createdAt: new Date().toISOString(),
+    });
     //更新历史会话列表
     querySessionList();
+    //开始流式对话
+    startStreamingChat(currentSession.value.sessionId, message);
   });
+};
+
+const startStreamingChat = (sessionId, userMessage) => {
+  //防止重复发送
+  if (isAiTying.value) {
+    ElMessage.warning("AI助手正在回复中，请稍后");
+    return;
+  }
+  isAiTying.value = true;
+  const aiMessage = {
+    id: `ai_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`,
+    senderType: 2,
+    content: "",
+    createAt: new Date().toISOString(),
+  };
+  messages.value.push(aiMessage);
+
+  //结束请求的方法
+  //用来终止fetch请求的
+  const ctrl = new AbortController();
+  //调用流式接口
+  fetchEventSource("/api/psychological-chat/stream", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Token: localStorage.getItem("token"),
+      Accept: "text/event-stream",
+    },
+    body: JSON.stringify({
+      sessionId,
+      userMessage,
+    }),
+    signal: ctrl.signal,
+    //处理流式响应
+    onopen: (response) => {
+      //检查响应头是否为流式数据
+      if (response.headers.get("Content-Type") !== "text/event-stream") {
+        ElMessage.error("服务器返回了非流式数据");
+      }
+    },
+    //处理流式数据
+    onmessage: (event) => {
+      console.log("流式数据", event);
+      const raw = event.data.trim();
+      if (!raw) {
+        return;
+      }
+      const eventName = event.event;
+      // 获取当前会话的AI消息
+      const aiMessage = messages.value[messages.value.length - 1];
+      if (eventName === "done") {
+        isAiTying.value = false;
+        ctrl.abort();
+        return;
+      }
+      const payload = JSON.parse(raw);
+      const isSuccess = String(payload.code) === "200";
+      if (isSuccess && payload.data && payload.data.content) {
+        aiMessage.content += payload.data.content;
+      } else if (!isSuccess) {
+        // 流式响应处理错误
+        handleStreamingError(payload.message || "AI回复失败");
+      }
+    },
+    //处理流式错误
+    onerror: (error) => {
+      isAiTying.value = false;
+      handleStreamingError(error);
+      throw error;
+    },
+    onclose: () => {
+      // 开始情绪花园
+    },
+  });
+};
+
+const handleStreamingError = (error) => {
+  const aiMessage = messages.value[messages.value.length - 1];
+  if (aiMessage) {
+    aiMessage.content = "AI回复失败，请稍后重试";
+  }
+  isAiTying.value = false;
+  ElMessage.error("AI回复失败，请稍后重试");
 };
 
 //页面首次加载、点击新建会话按钮时调用
@@ -299,8 +399,14 @@ const selectSession = (session) => {
   //查询会话消息列表
   getSessionMessages(session.id).then((res) => {
     messages.value = res;
-    console.log("132", res);
   });
+  //更新当前会话对象数据
+  const sessionData = {
+    sessionId: `session_${session.id}`,
+    status: "ACTIVE",
+    sessionTitle: session.sessionTitle,
+  };
+  currentSession.value = sessionData;
 };
 
 //删除会话

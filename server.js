@@ -2788,6 +2788,105 @@ app.get("/psychological-chat/sessions/:sessionId/messages", (req, res) => {
   res.send(data1);
 });
 
+app.post("/psychological-chat/session/start", (req, res) => {
+  const data = {
+    code: "200",
+    msg: "操作成功",
+    data: {
+      sessionId: "session_32752",
+      userHash: 11803,
+      initialMessage: "123",
+      startTime: 1784794693434,
+      expiryTime: 1784881093434,
+      status: "ACTIVE",
+      messageCount: 1,
+    },
+    message: "操作成功",
+    success: true,
+  };
+  res.send(data);
+});
+app.post("/psychological-chat/stream", (req, res) => {
+  console.log("收到流式请求:", req.body);
+
+  const aiResponses = [
+    "你好",
+    "呀",
+    "~",
+    "~",
+    "我是",
+    "你的",
+    "心理",
+    "陪伴",
+    "陪伴",
+    "小",
+    "助手",
+    "。",
+    "\n\n",
+    "记住",
+    "，",
+    "无论",
+    "遇到",
+    "什么",
+    "什么",
+    "困难",
+    "，",
+    "你",
+    "都不是",
+    "一个人",
+    "在面对",
+    "。",
+    "。",
+    "我们可以",
+    "一起",
+    "寻找",
+    "解决问题",
+    "的方法",
+    "~",
+    "~",
+  ];
+
+  let index = 0;
+  let timer = null;
+
+  const sendChunk = () => {
+    if (index < aiResponses.length) {
+      const data = {
+        code: "200",
+        msg: "操作成功",
+        data: {
+          type: "normal",
+          content: aiResponses[index],
+        },
+      };
+      const line = `data: ${JSON.stringify(data)}\n\n`;
+      console.log("发送:", line.trim());
+      res.write(line);
+      index++;
+      timer = setTimeout(sendChunk, 100);
+    } else {
+      res.write(`event: done\ndata: {}\n\n`);
+      console.log("发送结束标记");
+      res.end();
+    }
+  };
+
+  res.writeHead(200, {
+    "Content-Type": "text/event-stream",
+    "Cache-Control": "no-cache",
+    Connection: "keep-alive",
+    "Access-Control-Allow-Origin": "*",
+  });
+
+  sendChunk();
+
+  req.on("close", () => {
+    console.log("连接关闭");
+    if (timer) clearTimeout(timer);
+    res.end();
+  });
+});
+
 app.listen(5000, () => {
   console.log("服务器启动成功，请求地址：http://localhost:5000");
 });
