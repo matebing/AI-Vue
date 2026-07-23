@@ -19,7 +19,7 @@
           class="nav-link"
           >情绪日记</router-link
         >
-        <router-link to="/frontend/knowledge" class="nav-link"
+        <router-link to="/frontend/knowledges" class="nav-link"
           >知识库</router-link
         >
         <el-button
