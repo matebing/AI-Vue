@@ -2,7 +2,11 @@
   <div class="frontend-layout">
     <div class="navbar-container">
       <div class="brand-section">
-        <el-image :src="brandLogo" alt="品牌logo" class="brand-logo"></el-image>
+        <el-image
+          :src="iconJQRUrl"
+          alt="品牌logo"
+          class="brand-logo"
+        ></el-image>
         <h1 class="brand-name">心理健康AI助手</h1>
       </div>
       <div class="nav-section">
@@ -54,9 +58,10 @@ import { ref, onMounted } from "vue";
 import { logout } from "@/api/common";
 import { useRouter } from "vue-router";
 import { ElMessage, ElMessageBox } from "element-plus";
+import { iconJQRUrl } from "@/assets/index.js";
 
 const router = useRouter();
-const brandLogo = new URL("@/assets/images/机器人.png", import.meta.url).href;
+
 const isLogin = ref(false);
 
 const handleLogout = () => {

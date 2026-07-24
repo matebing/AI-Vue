@@ -3,7 +3,7 @@
     <div class="header-section">
       <div class="header-content">
         <el-image
-          :src="iconUrl"
+          :src="heartUrl"
           alt="like-icon"
           style="width: 60px; height: 60px"
         ></el-image>
@@ -124,7 +124,8 @@ import {
   emotionOptions,
   sleepQualitys,
   stressLevels,
-} from "@/config/index.js";
+} from "@/views/const.js";
+import { heartUrl } from "@/assets/index.js";
 
 const diaryForm = reactive({
   diaryContent: "",
@@ -145,8 +146,6 @@ const diaryForm = reactive({
 const selectEmotion = (name) => {
   diaryForm.dominantEmotion = name;
 };
-
-const iconUrl = new URL("@/assets/images/like.png", import.meta.url).href;
 
 const resetForm = () => {
   Object.assign(diaryForm, {

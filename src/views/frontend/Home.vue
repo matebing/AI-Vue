@@ -23,9 +23,7 @@
   </div>
 </template>
 <script setup>
-import { ref } from "vue";
-const robotUrl = new URL("@/assets/images/robot-fill.png", import.meta.url)
-  .href;
+import { robotUrl } from "@/assets/index.js";
 </script>
 <style lang="scss" scoped>
 .home-container {

@@ -267,6 +267,8 @@ import {
   getSessionMessages,
   getEmotionAnalysis,
 } from "@/api/frontend";
+import { getEmotionCount, getRiskText } from "@/utils/utils.js";
+import { heartUrl, robotUrl, userUrl } from "@/assets/index.js";
 
 //定义对话消息
 const messages = ref([]);
@@ -291,36 +293,6 @@ const currentEmotion = ref({
   suggestion: "情绪状态平稳",
   improvementSuggestions: [],
 });
-
-const heartUrl = new URL("@/assets/images/like.png", import.meta.url).href;
-const robotUrl = new URL("@/assets/images/robot-fill.png", import.meta.url)
-  .href;
-const userUrl = new URL("@/assets/images/users.png", import.meta.url).href;
-
-const getEmotionCount = (score) => {
-  if (score >= 61) {
-    return 3;
-  }
-  if (score >= 31) {
-    return 2;
-  }
-  return 1;
-};
-
-const getRiskText = (level) => {
-  switch (level) {
-    case 0:
-      return "正常";
-    case 1:
-      return "关注";
-    case 2:
-      return "预警";
-    case 3:
-      return "危机";
-    default:
-      return "正常";
-  }
-};
 
 //处理键盘事件
 const handleKeyDown = (e) => {

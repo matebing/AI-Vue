@@ -1,0 +1,15 @@
+export const heartUrl = new URL("@/assets/images/like.png", import.meta.url).href;
+export const robotUrl = new URL("@/assets/images/robot-fill.png", import.meta.url).href;
+export const userUrl = new URL("@/assets/images/users.png", import.meta.url).href;
+export const bookUrl = new URL("@/assets/images/book.png", import.meta.url).href;
+export const commentsUrl = new URL("@/assets/images/comments.png", import.meta.url).href;
+export const smileUrl = new URL("@/assets/images/smile.png", import.meta.url).href;
+export const iconJQRUrl = new URL("@/assets/images/机器人.png", import.meta.url).href;
+export const happyUrl = new URL("@/assets/images/开心.png", import.meta.url).href;
+export const calmUrl = new URL("@/assets/images/平静.png", import.meta.url).href;
+export const anxietyUrl = new URL("@/assets/images/焦虑.png", import.meta.url).href;
+export const sadUrl = new URL("@/assets/images/悲伤.png", import.meta.url).href;
+export const excitedUrl = new URL("@/assets/images/兴奋.png", import.meta.url).href;
+export const tiredUrl = new URL("@/assets/images/疲惫.png", import.meta.url).href;
+export const surprisedUrl = new URL("@/assets/images/惊讶.png", import.meta.url).href;
+export const confusedUrl = new URL("@/assets/images/困惑.png", import.meta.url).href;

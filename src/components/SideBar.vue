@@ -7,7 +7,7 @@
       :collapse-transition="false"
     >
       <div class="brand">
-        <el-image class="brand-logo" :src="iconUrl"></el-image>
+        <el-image class="brand-logo" :src="iconJQRUrl"></el-image>
         <div v-if="!isCollapsed" class="brand-info">
           <h1 class="brand-title">心理健康AI助手</h1>
           <p class="brand-subtitle">管理后台</p>
@@ -30,6 +30,7 @@ import { computed } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { useAdminStore } from "@/store/admin";
 import { storeToRefs } from "pinia";
+import { iconJQRUrl } from "@/assets/index.js";
 
 const { isCollapse } = storeToRefs(useAdminStore());
 
@@ -38,8 +39,6 @@ const isCollapsed = computed(() => useAdminStore().isCollapse);
 const router = useRouter();
 const { children: routes, path } = router.options.routes[1];
 
-//获取图片路径，需要确保打包之后的路径正确，否则会报错
-const iconUrl = new URL("@/assets/images/机器人.png", import.meta.url).href;
 const selectMenu = (key) => {
   const activeUrl = `${path}/${key.index}`;
   router.push(activeUrl);

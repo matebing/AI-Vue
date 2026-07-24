@@ -9,7 +9,7 @@
         <div class="robot">
           <el-image
             class="image-size"
-            :src="robotImg"
+            :src="robotUrl"
             alt="心理AI助手"
           ></el-image>
         </div>
@@ -21,8 +21,7 @@
   </div>
 </template>
 <script setup>
-const robotImg = new URL("@/assets/images/robot-fill.png", import.meta.url)
-  .href;
+import { robotUrl } from "@/assets/index.js";
 </script>
 
 <style lang="scss" scoped>

@@ -86,11 +86,13 @@ const handleLogin = async (formEl) => {
         localStorage.setItem("userInfo", JSON.stringify(res.userInfo));
         ElMessage.success("登录成功");
         //根据用户角色决定跳转的路径
+        console.log(res);
         if (res.roleType === "2") {
           router.push("/back/dashboard");
         } else {
           // 普通用户跳转首页
           router.push({ name: "Home" });
+          // router.push("/frontend");
         }
       });
     }

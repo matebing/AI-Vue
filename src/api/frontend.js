@@ -29,3 +29,19 @@ export const getEmotionAnalysis = (sessionId) => {
 export const createEmotionDiary = (data) => {
   return service.post("/emotion-diary", data);
 };
+
+//查询知识库推荐阅读列表
+export const getKnowledgeList = (params) => {
+  console.log("参数", params);
+  return service.get("/knowledge/article/page", { params });
+};
+
+//查询知识库列表
+export const getArticleList = (params) => {
+  return service.get("/knowledge/article/page", { params });
+};
+
+//查询文章详情
+export const getArticleDetail = (articleId) => {
+  return service.get(`/knowledge/article/${articleId}`);
+};

@@ -2910,6 +2910,37 @@ app.post("/psychological-chat/stream", (req, res) => {
   });
 });
 
+app.get("/knowledge/article/:articleId", (req, res) => {
+  const data = {
+    code: "200",
+    msg: "操作成功",
+    data: {
+      id: "1e243202a68c5286fb500eb4fe7fe234",
+      categoryId: 4,
+      categoryName: "人际关系",
+      title: "当·潮汐漫溢",
+      summary: "王俊凯【当·潮汐漫溢】巡回演唱会",
+      content:
+        "<p>王俊凯【当·潮汐漫溢】巡回演唱会——重庆站首场于7月18-19日在重庆·华熙生物·润百颜ECM中心演出</p><p>没抢到票</p><p>痛苦！！！！</p><p><br></p>",
+      coverImage: "/files/bussiness/article/1784272739769.jpg",
+      tags: "情绪管理,放松,正念",
+      tagArray: ["情绪管理", "放松", "正念"],
+      authorId: 1,
+      authorName: "kk",
+      readCount: 0,
+      status: 1,
+      statusText: "已发布",
+      isFavorited: false,
+      publishedAt: "2026-07-19 23:49:32",
+      createdAt: "2026-07-17 15:19:06",
+      updatedAt: "2026-07-19 23:49:32",
+    },
+    message: "操作成功",
+    success: true,
+  };
+  res.send(data);
+});
+
 app.listen(5000, () => {
   console.log("服务器启动成功，请求地址：http://localhost:5000");
 });
